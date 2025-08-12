@@ -1,0 +1,14 @@
+app:
+  name: inventory
+  addr: ":80"
+
+log:
+  file: inventory.log
+  max-size: 5
+  max-backups: 90
+  max-age: 60
+  level: DEBUG
+
+postgres:
+  dev: "example_uri"
+  prod: "example_uri"

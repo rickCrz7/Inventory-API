@@ -2,9 +2,9 @@ package utils
 
 type Owner struct {
 	ID        string  `json:"id"`
-	FirstName string  `json:"firstName"`
-	LastName  string  `json:"lastName"`
-	CampusID  *string `json:"campusID"`
+	FirstName string  `json:"first_name"`
+	LastName  string  `json:"last_name"`
+	CampusID  *string `json:"campus_id"`
 	Email     string  `json:"email"`
 }
 
@@ -16,39 +16,39 @@ type Type struct {
 
 type TypeProperty struct {
 	ID       string `json:"id"`
-	TypeID   string `json:"typeID"`
+	TypeID   string `json:"type_id"`
 	Name     string `json:"name"`
-	DataType string `json:"dataType"`
+	DataType string `json:"data_type"`
 	Required bool   `json:"required"`
 }
 
 type Device struct {
 	ID           string `json:"id"`
-	SerialNumber string `json:"serialNumber"`
+	SerialNumber string `json:"serial_number"`
 	Name         string `json:"name"`
-	TypeID       string `json:"typeID"`
-	OwnerID      string `json:"ownerID"`
-	PurchaseDate string `json:"purchaseDate"`
+	TypeID       string `json:"type_id"`
+	OwnerID      string `json:"owner_id"`
+	PurchaseDate string `json:"purchase_date"`
 	Status       string `json:"status"`
 }
 
 type DeviceProperty struct {
 	ID              string `json:"id"`
-	DeviceID        string `json:"deviceID"`
-	TypePropertyID  string `json:"typePropertyID"`
+	DeviceID        string `json:"device_id"`
+	TypePropertyID  string `json:"type_property_id"`
 	Value           string `json:"value"`
 }
 
 type DevicePhoto struct {
 	ID        string `json:"id"`
-	DeviceID  string `json:"deviceID"`
+	DeviceID  string `json:"device_id"`
 	Photo     string `json:"photo"`
-	CreatedAt string `json:"createdAt"`
+	CreatedAt string `json:"created_at"`
 }
 
 type DeviceLog struct {
 	ID        string `json:"id"`
-	DeviceID  string `json:"deviceID"`
+	DeviceID  string `json:"device_id"`
 	Message   string `json:"message"`
-	CreatedAt string `json:"createdAt"`
+	CreatedAt string `json:"created_at"`
 }

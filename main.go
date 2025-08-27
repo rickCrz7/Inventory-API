@@ -15,9 +15,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/natefinch/lumberjack"
-	"github.com/rickCrz7/Inventory-API/utils"
 	"github.com/gorilla/mux"
+	"github.com/natefinch/lumberjack"
+	"github.com/rickCrz7/Inventory-API/devices"
+	"github.com/rickCrz7/Inventory-API/owners"
+	"github.com/rickCrz7/Inventory-API/types"
+	"github.com/rickCrz7/Inventory-API/types/properties"
+	"github.com/rickCrz7/Inventory-API/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -99,6 +103,44 @@ func main() {
 	r := mux.NewRouter()
 	r.Use(loggingMiddleware)
 
+	// Register handlers
+	ownersDao := owners.NewDao()
+	ownersService := owners.NewService(ownersDao, pdb)
+	ownersHandler := owners.NewHandler(ownersService)
+	r.HandleFunc("/api/v1/owners/{id}", ownersHandler.GetOwner).Methods("GET")
+	r.HandleFunc("/api/v1/owners/campus/{campusID}", ownersHandler.GetOwnerByCampusID).Methods("GET")
+	r.HandleFunc("/api/v1/owners/email/{email}", ownersHandler.GetOwnerByEmail).Methods("GET")
+	r.HandleFunc("/api/v1/owners", ownersHandler.GetOwners).Methods("GET")
+	r.HandleFunc("/api/v1/owners", ownersHandler.CreateOwner).Methods("POST")
+	r.HandleFunc("/api/v1/owners", ownersHandler.UpdateOwner).Methods("PUT")
+	r.HandleFunc("/api/v1/owners/{id}", ownersHandler.DeleteOwner).Methods("DELETE")
+
+	typesDao := types.NewDao()
+	typesService := types.NewService(typesDao, pdb)
+	typesHandler := types.NewHandler(typesService)
+	r.HandleFunc("/api/v1/types/{id}", typesHandler.GetType).Methods("GET")
+	r.HandleFunc("/api/v1/types", typesHandler.GetTypes).Methods("GET")
+	r.HandleFunc("/api/v1/types", typesHandler.CreateType).Methods("POST")
+	r.HandleFunc("/api/v1/types", typesHandler.UpdateType).Methods("PUT")
+	r.HandleFunc("/api/v1/types/{id}", typesHandler.DeleteType).Methods("DELETE")
+
+	typePropertiesDao := properties.NewDao()
+	typePropertiesService := properties.NewService(typePropertiesDao, pdb)
+	typePropertiesHandler := properties.NewHandler(typePropertiesService)
+	r.HandleFunc("/api/v1/types/{type_id}/properties", typePropertiesHandler.GetProperties).Methods("GET")
+	r.HandleFunc("/api/v1/types/{type_id}/properties", typePropertiesHandler.CreateProperty).Methods("POST")
+	r.HandleFunc("/api/v1/types/{type_id}/properties/{id}", typePropertiesHandler.UpdateProperty).Methods("PUT")
+	r.HandleFunc("/api/v1/types/{type_id}/properties/{id}", typePropertiesHandler.DeleteProperty).Methods("DELETE")
+
+	devicesDao := devices.NewDao()
+	devicesService := devices.NewService(devicesDao, pdb)
+	devicesHandler := devices.NewHandler(devicesService)
+	r.HandleFunc("/api/v1/devices/{id}", devicesHandler.GetDevice).Methods("GET")
+	r.HandleFunc("/api/v1/devices", devicesHandler.GetDevices).Methods("GET")
+	r.HandleFunc("/api/v1/devices", devicesHandler.CreateDevice).Methods("POST")
+	r.HandleFunc("/api/v1/devices/{id}", devicesHandler.UpdateDevice).Methods("PUT")
+	r.HandleFunc("/api/v1/devices/{id}", devicesHandler.DeleteDevice).Methods("DELETE")
+
 	srv := &http.Server{
 		Handler: r,
 		Addr:    viper.GetString("app.addr"),
@@ -138,7 +180,7 @@ func main() {
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		// skip logging for health check
-		if request.URL.Path == "/purchase/api/v1/healthz" {
+		if request.URL.Path == "/api/v1/purchase/api/v1/healthz" {
 			next.ServeHTTP(response, request)
 			return
 		}

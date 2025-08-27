@@ -28,6 +28,7 @@ require (
 require (
 	github.com/gorilla/mux v1.8.1
 	github.com/jackc/pgx/v5 v5.7.5
+	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.20.1
 	golang.org/x/sys v0.32.0 // indirect

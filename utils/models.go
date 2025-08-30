@@ -1,5 +1,7 @@
 package utils
 
+import "time"
+
 type Owner struct {
 	ID        string  `json:"id"`
 	FirstName string  `json:"first_name"`
@@ -23,20 +25,20 @@ type TypeProperty struct {
 }
 
 type Device struct {
-	ID           string `json:"id"`
-	SerialNumber string `json:"serial_number"`
-	Name         string `json:"name"`
-	TypeID       string `json:"type_id"`
-	OwnerID      string `json:"owner_id"`
-	PurchaseDate string `json:"purchase_date"`
-	Status       string `json:"status"`
+	ID           string    `json:"id"`
+	SerialNumber string    `json:"serial_number"`
+	Name         string    `json:"name"`
+	TypeID       string    `json:"type_id"`
+	OwnerID      string    `json:"owner_id"`
+	PurchaseDate time.Time `json:"purchase_date"`
+	Status       string    `json:"status"`
 }
 
 type DeviceProperty struct {
-	ID              string `json:"id"`
-	DeviceID        string `json:"device_id"`
-	TypePropertyID  string `json:"type_property_id"`
-	Value           string `json:"value"`
+	ID             string `json:"id"`
+	DeviceID       string `json:"device_id"`
+	TypePropertyID string `json:"type_property_id"`
+	Value          string `json:"value"`
 }
 
 type DevicePhoto struct {
@@ -49,6 +51,8 @@ type DevicePhoto struct {
 type DeviceLog struct {
 	ID        string `json:"id"`
 	DeviceID  string `json:"device_id"`
-	Message   string `json:"message"`
+	LogType   string `json:"log_type"`
+	Note      string `json:"note"`
 	CreatedAt string `json:"created_at"`
+	CreatedBy string `json:"created_by"`
 }

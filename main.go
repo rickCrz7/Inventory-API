@@ -18,9 +18,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/natefinch/lumberjack"
 	"github.com/rickCrz7/Inventory-API/devices"
+	"github.com/rickCrz7/Inventory-API/devices/logs"
+	dev_properties "github.com/rickCrz7/Inventory-API/devices/properties"
 	"github.com/rickCrz7/Inventory-API/owners"
 	"github.com/rickCrz7/Inventory-API/types"
 	"github.com/rickCrz7/Inventory-API/types/properties"
+
 	"github.com/rickCrz7/Inventory-API/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -140,6 +143,21 @@ func main() {
 	r.HandleFunc("/api/v1/devices", devicesHandler.CreateDevice).Methods("POST")
 	r.HandleFunc("/api/v1/devices/{id}", devicesHandler.UpdateDevice).Methods("PUT")
 	r.HandleFunc("/api/v1/devices/{id}", devicesHandler.DeleteDevice).Methods("DELETE")
+
+	devicePropertiesDao := dev_properties.NewDao()
+	devicePropertiesService := dev_properties.NewService(devicePropertiesDao, pdb)
+	devicePropertiesHandler := dev_properties.NewHandler(devicePropertiesService)
+	r.HandleFunc("/api/v1/devices/{device_id}/properties", devicePropertiesHandler.GetProperties).Methods("GET")
+	r.HandleFunc("/api/v1/devices/{device_id}/properties", devicePropertiesHandler.CreateProperty).Methods("POST")
+	r.HandleFunc("/api/v1/devices/{device_id}/properties/{id}", devicePropertiesHandler.UpdateProperty).Methods("PUT")
+	r.HandleFunc("/api/v1/devices/{device_id}/properties/{id}", devicePropertiesHandler.DeleteProperty).Methods("DELETE")
+
+	deviceLogsDao := logs.NewDao()
+	deviceLogsService := logs.NewService(deviceLogsDao, pdb)
+	deviceLogsHandler := logs.NewHandler(deviceLogsService)
+	r.HandleFunc("/api/v1/devices/{device_id}/logs", deviceLogsHandler.GetLogs).Methods("GET")
+	r.HandleFunc("/api/v1/devices/{device_id}/logs", deviceLogsHandler.CreateLog).Methods("POST")
+	r.HandleFunc("/api/v1/devices/{device_id}/logs/{id}", deviceLogsHandler.DeleteLog).Methods("DELETE")
 
 	srv := &http.Server{
 		Handler: r,

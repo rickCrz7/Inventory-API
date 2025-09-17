@@ -43,16 +43,16 @@ type DeviceProperty struct {
 
 type DevicePhoto struct {
 	ID        string `json:"id"`
-	DeviceID  string `json:"device_id"`
-	Photo     string `json:"photo"`
-	CreatedAt string `json:"created_at"`
+	DeviceID  string    `json:"device_id"`
+	Photo     string    `json:"photo"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type DeviceLog struct {
-	ID        string `json:"id"`
-	DeviceID  string `json:"device_id"`
-	LogType   string `json:"log_type"`
-	Note      string `json:"note"`
-	CreatedAt string `json:"created_at"`
-	CreatedBy string `json:"created_by"`
+	ID        string    `json:"id"`
+	DeviceID  string    `json:"device_id"`
+	LogType   string    `json:"log_type"`
+	Note      string    `json:"note"`
+	CreatedAt time.Time `json:"created_at"`
+	CreatedBy string    `json:"created_by"`
 }

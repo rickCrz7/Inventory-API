@@ -21,7 +21,7 @@ func NewService(dao *Dao, pdb *pgxpool.Pool) *Service {
 	}
 }
 
-func (s *Service) GetProperties(ctx context.Context, id string) (*utils.DeviceProperty, error) {
+func (s *Service) GetProperties(ctx context.Context, id string) ([]*utils.DeviceProperty, error) {
 	tx, err := s.pdb.BeginTx(ctx, pgx.TxOptions{
 		AccessMode: pgx.ReadOnly,
 	})

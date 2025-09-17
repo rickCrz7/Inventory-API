@@ -15,16 +15,27 @@ func NewDao() *Dao {
 	return &Dao{}
 }
 
-func (d *Dao) GetProperties(ctx context.Context, tx pgx.Tx, device_id string) (*utils.DeviceProperty, error) {
-	log.Printf("Fetching property with Device ID: %s", device_id)
-	var property utils.DeviceProperty
+func (d *Dao) GetProperties(ctx context.Context, tx pgx.Tx, device_id string) ([]*utils.DeviceProperty, error) {
+	log.Printf("Fetching properties with Device ID: %s", device_id)
+	var properties []*utils.DeviceProperty
 	query := `SELECT id, device_id, type_property_id, value FROM device_properties WHERE device_id = $1`
-	err := tx.QueryRow(ctx, query, device_id).Scan(&property.ID, &property.DeviceID, &property.TypePropertyID, &property.Value)
+	rows, err := tx.Query(ctx, query, device_id)
 	if err != nil {
-		log.Errorf("Error fetching property with Device ID %s: %v", device_id, err)
 		return nil, err
 	}
-	return &property, nil
+	defer rows.Close()
+
+	for rows.Next() {
+		var property utils.DeviceProperty
+		if err := rows.Scan(&property.ID, &property.DeviceID, &property.TypePropertyID, &property.Value); err != nil {
+			return nil, err
+		}
+		properties = append(properties, &property)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return properties, nil
 }
 
 func (d *Dao) CreateProperty(ctx context.Context, tx pgx.Tx, property *utils.DeviceProperty) error {
